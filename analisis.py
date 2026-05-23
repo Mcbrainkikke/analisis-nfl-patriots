@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # carga de datos
 df_scores = pd.read_csv('spreadspoke_scores.csv')
@@ -42,3 +43,32 @@ patriots['resultado'] = patriots.apply(resultado_patriots, axis=1) #toma la func
 
 print('=== Resultados ===')
 print(patriots['resultado'].value_counts()) #Cuenta cuantas veces aparece cada valor en la columna resultado. Arroja cuantas victorias y cuantas derrotas tiene el historial
+
+#.groupby() agrupa todos los partidos por temporada
+#.values_counts() cuenta cuantas victorias y derrotas hay
+# .unstack() convierte esos conteos en columnas separadas: uno para ganados otros para perdidos
+por_temporada = patriots.groupby('schedule_season')['resultado'].value_counts().unstack(fill_value=0)
+
+print('=== RENDIMIENTO POR TEMPORADA ===')
+print(por_temporada)
+
+# Grafica
+# grafica de victorias y derrotas por temporadacon barras 
+fig, ax = plt.subplots(figsize=(18,6))
+
+# barra de victoria
+ax.bar(por_temporada.index, por_temporada['Ganado'],
+	   label='Ganado', color='steelblue')
+
+# barra de derrotas
+ax.bar(por_temporada.index, por_temporada['Perdido'],
+	   bottom=por_temporada['Ganado'], # bottom apila barrada donde finaliza la otra
+	   label='Perdido', color='tomato')
+
+plt.title('New England Patriots — Victorias y Derrotas por Temporada')
+plt.xlabel('Temporada')
+plt.ylabel('Partidos')
+plt.legend(['Ganado', 'Perdido'])
+plt.xticks(por_temporada.index, rotation=90, fontsize=7) # rota las fechas del eje X para que no se amontonen
+plt.tight_layout()
+plt.show()
