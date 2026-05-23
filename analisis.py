@@ -72,3 +72,42 @@ plt.legend(['Ganado', 'Perdido'])
 plt.xticks(por_temporada.index, rotation=90, fontsize=7) # rota las fechas del eje X para que no se amontonen
 plt.tight_layout()
 plt.show()
+
+# ------- Analisis Local vs Visitante ----------
+# Separación de los partidos en dos gruopos: Uno para local y otro para visitante
+local = patriots[patriots['team_home'] == 'New England Patriots'].copy()
+visitante = patriots[patriots['team_away'] == 'New England Patriots'].copy()
+
+# Se cuentan victorias y derrotas en cada grupo
+# value_counts() cuenta cuantas veces aparece cada valor en la columna resultado
+resultados_local = local['resultado'].value_counts()
+resultado_visitante = visitante['resultado'].value_counts()
+
+print('==== LOCAL ====')
+print(f'Total partidos: {len(local)}')
+print(f'{resultados_local}\n')
+print('==== VISITANTE ====')
+print(f'Total partidos: {len(visitante)}')
+print(resultado_visitante)
+
+# Grafica
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Se definen las posiciones manualmente
+pos_local_ganado = 0.8
+pos_local_perdido = 1.2
+pos_visitante_ganado = 1.8
+pos_visitante_perdido = 2.2
+
+ax.bar(pos_local_ganado, resultados_local['Ganado'], width=0.35, color='steelblue', label='Ganado')
+ax.bar(pos_local_perdido, resultados_local['Perdido'], width=0.35, color='tomato', label='Perdido')
+ax.bar(pos_visitante_ganado, resultado_visitante['Ganado'], width=0.35, color='steelblue')
+ax.bar(pos_visitante_perdido, resultado_visitante['Perdido'], width=0.35, color='tomato')
+
+plt.title('Patriots - Rendimiento Local vs Visitante')
+plt.ylabel('Partidos')
+plt.xticks([1, 2], ['Local', 'Visitante'])
+plt.legend()
+plt.tight_layout()
+plt.show()
+
