@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # carga de datos
 df_scores = pd.read_csv('spreadspoke_scores.csv')
@@ -111,3 +112,24 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
+# Puntos anotados por temporada
+
+# Se necesita saber cuantos puntos anotaron los Patriots en cada partido.
+# Se crea una columna nueva con los puntos que anotaron los Patriots en cada partido.
+# Si es de local, sus puntos estan en score_home
+# Si es visitante, los puntos estan en score_away
+# np.where es como un if/else pero aplicado a toda la columna de una vez
+
+patriots['puntos_patriots'] = np.where(
+	patriots['team_home'] == 'New England Patriots',
+	patriots['score_home'],
+	patriots['score_away']
+)
+
+# Se agrupa por temporada y se calcula el promedio de puntos por partido
+# .mean() calcula el promedio de todos los valores de un grupo
+
+promedio_puntos = patriots.groupby('schedule_season')['puntos_patriots'].mean()
+
+print('=== PROMEDIO DE PUNTOS POR TEMPORADA ===')
+print(promedio_puntos)
